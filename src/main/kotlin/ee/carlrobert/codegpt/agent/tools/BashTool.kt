@@ -371,7 +371,6 @@ class BashTool(
                 .apply {
                     directory(File(workingDirectory))
                     redirectErrorStream(false)
-                    applyCustomPath()
                 }
                 .start()
             closeStdin(process)
@@ -557,7 +556,6 @@ class BashTool(
             .apply {
                 directory(File(workingDirectory))
                 redirectErrorStream(false)
-                applyCustomPath()
             }
             .start()
 
@@ -566,26 +564,19 @@ class BashTool(
     }
 
     private fun buildShellCommand(command: String): List<String> {
+        val preExecScript = ToolConfigurationSettings.getState().bashPreExecScript
+        val fullCommand = if (preExecScript.isNullOrEmpty()) command else "$preExecScript\n$command"
         val osName = System.getProperty("os.name").lowercase()
         return when {
             osName.contains("win") -> {
                 val systemRoot = System.getenv("SystemRoot")
                     ?: System.getenv("WINDIR")
                     ?: "C:\\Windows"
-                listOf("$systemRoot\\System32\\cmd.exe", "/c", command)
+                listOf("$systemRoot\\System32\\cmd.exe", "/c", fullCommand)
             }
-            osName.contains("bsd") -> listOf("sh", "-c", command)
-            else -> listOf("bash", "-c", command)
+            osName.contains("bsd") -> listOf("sh", "-c", fullCommand)
+            else -> listOf("bash", "-c", fullCommand)
         }
-    }
-
-    // Prepends user-configured additional PATH entries to the process PATH.
-    private fun ProcessBuilder.applyCustomPath() {
-        val bashPath = ToolConfigurationSettings.getState().bashPath
-        if (bashPath.isNullOrEmpty()) return
-        val environment = environment()
-        val currentPath = environment["PATH"] ?: ""
-        environment["PATH"] = if (currentPath.isEmpty()) bashPath else "$bashPath${File.pathSeparator}$currentPath"
     }
 
     private fun shouldBlockByIgnore(command: String): Boolean {

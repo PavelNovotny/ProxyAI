@@ -1,6 +1,6 @@
 # 0002 — Tool Configuration: Bash Pre-Execution Script
 
-Status: Proposed
+Status: Done
 Date: 2026-09-25
 
 ## Context

@@ -2,10 +2,11 @@ package ee.carlrobert.codegpt.settings.tools
 
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.ui.ComboBox
-import com.intellij.ui.components.JBTextField
+import com.intellij.ui.components.JBTextArea
 import com.intellij.util.ui.FormBuilder
 import javax.swing.JComponent
 import javax.swing.JPanel
+import javax.swing.JScrollPane
 
 class ToolConfigurationConfigurable : Configurable {
 
@@ -24,15 +25,15 @@ class ToolConfigurationConfigurable : Configurable {
 
     override fun isModified(): Boolean {
         val state = ToolConfigurationSettings.getState()
-        return component?.bashPath != state.bashPath
+        return component?.bashPreExecScript != state.bashPreExecScript
     }
 
     override fun apply() {
-        ToolConfigurationSettings.getState().bashPath = component?.bashPath ?: ""
+        ToolConfigurationSettings.getState().bashPreExecScript = component?.bashPreExecScript ?: ""
     }
 
     override fun reset() {
-        component?.bashPath = ToolConfigurationSettings.getState().bashPath ?: ""
+        component?.bashPreExecScript = ToolConfigurationSettings.getState().bashPreExecScript ?: ""
     }
 
     override fun disposeUIResources() {
@@ -43,19 +44,19 @@ class ToolConfigurationConfigurable : Configurable {
 private class ToolConfigurationComponent {
 
     private val toolSelector = ComboBox(arrayOf("Bash"))
-    private val bashPathField = JBTextField(40)
+    private val bashPreExecScriptArea = JBTextArea(8, 40)
 
     val panel: JPanel = FormBuilder.createFormBuilder()
         .addLabeledComponent("Tool:", toolSelector)
-        .addLabeledComponent("Bash additional PATH:", bashPathField)
+        .addLabeledComponent("Bash pre-execution script:", JScrollPane(bashPreExecScriptArea))
         .addComponentFillVertically(JPanel(), 0)
         .panel
 
-    val preferredFocusedComponent: JComponent get() = bashPathField
+    val preferredFocusedComponent: JComponent get() = bashPreExecScriptArea
 
-    var bashPath: String
-        get() = bashPathField.text.trim()
+    var bashPreExecScript: String
+        get() = bashPreExecScriptArea.text.trim()
         set(value) {
-            bashPathField.text = value
+            bashPreExecScriptArea.text = value
         }
 }

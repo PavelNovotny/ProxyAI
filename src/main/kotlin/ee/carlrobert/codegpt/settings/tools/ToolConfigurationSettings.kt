@@ -23,5 +23,5 @@ class ToolConfigurationSettings :
 }
 
 class ToolConfigurationSettingsState : BaseState() {
-    var bashPath by string("")
+    var bashPreExecScript by string("")
 }
