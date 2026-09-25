@@ -15,6 +15,7 @@ import com.intellij.openapi.vfs.VirtualFileManager
 import ee.carlrobert.codegpt.agent.AgentToolOutputNotifier
 import ee.carlrobert.codegpt.agent.ToolRunContext
 import ee.carlrobert.codegpt.settings.ProxyAISettingsService
+import ee.carlrobert.codegpt.settings.tools.ToolConfigurationSettings
 import ee.carlrobert.codegpt.settings.hooks.HookEventType
 import ee.carlrobert.codegpt.settings.hooks.HookManager
 import ee.carlrobert.codegpt.tokens.truncateToolResult
@@ -370,6 +371,7 @@ class BashTool(
                 .apply {
                     directory(File(workingDirectory))
                     redirectErrorStream(false)
+                    applyCustomPath()
                 }
                 .start()
             closeStdin(process)
@@ -555,6 +557,7 @@ class BashTool(
             .apply {
                 directory(File(workingDirectory))
                 redirectErrorStream(false)
+                applyCustomPath()
             }
             .start()
 
@@ -574,6 +577,15 @@ class BashTool(
             osName.contains("bsd") -> listOf("sh", "-c", command)
             else -> listOf("bash", "-c", command)
         }
+    }
+
+    // Prepends user-configured additional PATH entries to the process PATH.
+    private fun ProcessBuilder.applyCustomPath() {
+        val bashPath = ToolConfigurationSettings.getState().bashPath
+        if (bashPath.isNullOrEmpty()) return
+        val environment = environment()
+        val currentPath = environment["PATH"] ?: ""
+        environment["PATH"] = if (currentPath.isEmpty()) bashPath else "$bashPath${File.pathSeparator}$currentPath"
     }
 
     private fun shouldBlockByIgnore(command: String): Boolean {

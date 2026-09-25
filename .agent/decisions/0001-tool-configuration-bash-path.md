@@ -1,6 +1,6 @@
 # 0001 — Tool Configuration: Bash PATH
 
-Status: Proposed
+Status: Done
 Date: 2026-09-25
 
 ## Context

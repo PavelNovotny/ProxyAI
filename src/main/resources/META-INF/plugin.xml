@@ -104,6 +104,10 @@
       displayName="Telemetry"
       instance="ee.carlrobert.codegpt.telemetry.ui.preferences.TelemetryConfigurable"
       groupWeight="0"/>
+    <applicationConfigurable id="settings.codegpt.tools" parentId="settings.codegpt"
+      displayName="Tools"
+      instance="ee.carlrobert.codegpt.settings.tools.ToolConfigurationConfigurable"
+      groupWeight="-5"/>
 
     <actionPromoter implementation="ee.carlrobert.codegpt.actions.InlayActionPromoter"/>
     <applicationService
