@@ -1,5 +1,5 @@
 <idea-plugin>
-  <id>ee.carlrobert.chatgpt</id>
+  <id>pavelnovotny.proxyai-fork</id>
   <name>Proxy AI</name>
   <vendor email="carlrobertoh@gmail.com" url="https://carlrobert.ee">Carl-Robert Linnupuu</vendor>
   <depends>com.intellij.modules.platform</depends>
